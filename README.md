@@ -25,7 +25,7 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 9. <img width="308" height="248" alt="sysmon status" src="https://github.com/user-attachments/assets/a5708764-b9dd-4d82-802c-7d0b758f8cc7" />
 
 
-# Investigation 01: Multiple Failed Logons Followed by Success
+# Investigation 01: Multiple Failed Logons Followed by account lockout
 
 | Field | Detail |
 |---|---|

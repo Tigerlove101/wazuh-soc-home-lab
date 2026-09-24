@@ -17,7 +17,7 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 4. Installed Wazuh agents on the Windows endpoints and the Ubuntu server.
 5. Installed Sysmon on the Windows machines and configured the agent to collect Sysmon events.
 6. Verified that events reach the Wazuh dashboard.
-7. Wrote custom detection rules and triggered test scenarios (failed logons, account lockouts, group changes).
+7. Wrote custom detection rules and triggered test scenarios (failed logons, account lockouts).
 
 8. <img width="314" height="280" alt="sysmon agent conf" src="https://github.com/user-attachments/assets/e26be8bc-1388-40c6-8656-e7dc641f0d0b" />
 

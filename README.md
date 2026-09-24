@@ -5,10 +5,10 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 
 | Machine | OS | Role | IP |
 |---|---|---|---|
-| Wazuh server | Ubuntu | SIEM manager + dashboard | 192.168.x.x |
-| Domain controller | Windows Server | Active Directory | 192.168.x.x |
-| Windows client | Windows 10/11 | Endpoint with Sysmon | 192.168.x.x |
-| Ubuntu server | Ubuntu | Linux endpoint | 192.168.x.x |
+| Wazuh server | Ubuntu | SIEM manager + dashboard | 10.10.10.x |
+| Domain controller | Windows Server | Active Directory | 10.10.10.x |
+| Windows client | Windows 10/11 | Endpoint with Sysmon | 10.10.10.x |
+| Ubuntu server | Ubuntu | Linux endpoint | 10.10.10.x |
 
 ## Setup Summary
 1. Deployed pfSense as the gateway for the lab network.

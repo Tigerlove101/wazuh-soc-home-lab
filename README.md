@@ -1,5 +1,5 @@
 # Wazuh SOC Home Lab
-I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and a domain joined windows client.i also deployed wazuh-agent,sysmon to collect logs from endpoints.
+I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and a domain joined windows client.i also deployed wazuh-agent,sysmon to collect logs from endpoints and simulated and failed logon and validate the account lockout policy.
 
 <img width="1206" height="1146" alt="Wazuh-Lab-Architechture" src="https://github.com/user-attachments/assets/da7de1b9-4987-4843-938b-113eb0a31660" />
 
@@ -37,17 +37,17 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 | **MITRE ATT&CK** | T1110 Brute Force |
 
 ## Summary
-Wazuh raised an alert for repeated failed logons against the account `jdoe` on the Windows client, followed by a successful logon from the same source a few minutes later. This pattern is consistent with a password-guessing attack that eventually succeeded.
+Wazuh raised an alert for repeated failed logons against the account `morgan` on the Windows client. The lockout threshold was reached and the account was automatically locked out, which is the intended result of the domain's account lockout policy. I triaged the alert and documented the finding below..
 
 ## Alert Details
 
 <img width="698" height="535" alt="wazuh Dashboard" src="https://github.com/user-attachments/assets/d1094986-7083-4a22-ae34-4058a190de23" />
 *Wazuh dashboard showing the multiple-failures alert on the Windows client.*
 
-## Investigation (5 W's)
+## Investigation 
 
 - **Who:** Account `LAB\morgan`
-- **What:** 7 failed logons (Event ID 4625) followed by 1 successful logon (Event ID 4624)
+- **What:** 7 failed logons (Event ID 4625) followed by 1 account lockout (Event ID 4771)
 - **Where:** Windows client `MO1`, source IP `10.10.10XXX`
 - **When:** 14:02 to 14:09 on 2026-09-24 (failures within about 4 minutes)
 - **Why:** Password guessing against a domain account using a repeated-attempt pattern
@@ -59,25 +59,25 @@ Wazuh raised an alert for repeated failed logons against the account `jdoe` on t
 
 <img width="1920" height="1012" alt="4625 log" src="https://github.com/user-attachments/assets/ea43590a-3f92-4a58-a287-4457381f2bbd" />
 
-*Event ID 4625 from the same source IP after the failures.*
+*Event ID 4771 and 4740 on microsoft sentinel.*
+
+<img width="935" height="509" alt="Screenshot 2026-09-24 195027" src="https://github.com/user-attachments/assets/98bbd5f8-c4e2-4a03-9440-fa90da097b78" />
+
+
 
 ## Correlation
-- Searched Wazuh for the source IP across all agents: no other hosts targeted.
+- Reviewed activity around the incident for `morgan`: no new processes or group changes.
 - Checked for account lockout (Event ID 4740): triggered,lockout threshold was reached.
 
 - <img width="1920" height="1012" alt="account lockout" src="https://github.com/user-attachments/assets/914936ac-1b44-4a97-8a7c-63e92bdd3d91" />
 
-- Reviewed post-logon activity for "Morgan": no new processes or group changes (checked Sysmon Event ID 1 and Event ID 4728).
-
-## Verdict and Reasoning
-**True Positive.** Repeated failures then account lockout from the same source within minutes is a classic brute-force signature. In this lab it was generated intentionally, but in production it would warrant more investigation.
 
 ## Recommended Response
 1. Reset the password for "Morgan" and force re-authentication.
 2. Block or investigate the source IP at pfSense.
 3. Review other logons from that source over the past 24 hours.
 4. Tune the lockout policy so this pattern locks the account earlier.
-5. Add a detection rule for "failure threshold then success" (see `rules/local_rules.xml`).
+
 
 ## Lessons Learned
-Successful logons after many failures are more important than the failures alone, so the alert should be correlated, not viewed in isolation.
+Wazuh's Windows failed-logon rule (60204) maps to Event ID 4625, while Microsoft Sentinel surfaced the related Event ID 4771 (Kerberos pre-auth failure, code 0x18) with additional detail. Comparing both tools showed how the same incident looks different depending on the log source, and confirmed the value of correlating the failure events with the resulting lockout event rather than treating them as separate alerts.

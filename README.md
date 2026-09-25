@@ -4,7 +4,6 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 <img width="1206" height="1146" alt="Wazuh-Lab-Architechture" src="https://github.com/user-attachments/assets/da7de1b9-4987-4843-938b-113eb0a31660" />
 
 | Machine | OS | Role | IP |
-|---|---|---|---|
 | Wazuh server | Ubuntu | SIEM manager + dashboard | 10.10.10.x |
 | Domain controller | Windows Server | Active Directory | 10.10.10.x |
 | Windows client | Windows 10/11 | Endpoint with Sysmon | 10.10.10.x |

@@ -5,10 +5,10 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 
 
 | Machine | OS | Role | IP |
-| Wazuh server | Ubuntu | SIEM manager + dashboard | 10.10.10.x |
-| Domain controller | Windows Server | Active Directory | 10.10.10.x |
-| Windows client | Windows 10/11 | Endpoint with Sysmon | 10.10.10.x |
-| Ubuntu server | Ubuntu | Linux endpoint | 10.10.10.x | Kali attacker machine | Linux | 10.10.10.70
+| Wazuh server | Ubuntu | SIEM manager + dashboard | 10.10.10.30|
+| Domain controller | Windows Server | Active Directory | 10.10.10.10 |
+| Windows client | Windows 10 | Endpoint with Sysmon | 10.10.10.20|
+| Windows client | windows 10 | Endpoint with Sysmon| 10.10.10.114| Kali attacker machine | Linux | 10.10.10.70
 
 # Setup Summary
 1. Deployed pfSense as the gateway for the lab network.
@@ -49,7 +49,7 @@ Wazuh raised an alert for repeated failed logons against the account `testuser` 
 
 - **Who:** Account `testuser`
 - **What:** 3 failed logons (Event ID 4625) followed by 1 account lockout (Event ID 4740)
-- **Where:** Windows client `MO1`, source IP `10.10.10.XXX`
+- **Where:** Windows client `MO1`, source IP `10.10.10.20`
 - **When:** 18:29 to 18:59 on 2026-09-29 (failures within about 4 minutes)
 - **Why:** simulated brute-force attack using kali attacker machine. (using Hydra)
 
@@ -85,7 +85,7 @@ Wazuh raised an alert for repeated failed logons against the account `testuser` 
 
 
 # Lessons Learned
-Wazuh's Windows failed-logon rule (60204) maps to Event ID 4625, while Microsoft Sentinel surfaced the related Event ID 4771 (Kerberos pre-auth failure, code 0x18) with additional detail. Comparing both tools showed how the same incident looks different depending on the log source, and confirmed the value of correlating the failure events with the resulting lockout event rather than treating them as separate alerts.
+Wazuh's Windows failed-logon rule (60122) maps to Event ID 4625, and windows audit failure rule (60104) maps to Event ID 4776, while Microsoft Sentinel surfaced the related Event ID 4771 (Kerberos pre-auth failure, code 0xC0000064), Event ID 4740 (account lockout) with additional detail. Comparing both tools showed how the same incident looks different depending on the log source, and confirmed the value of correlating the failure events with the resulting lockout event rather than treating them as separate alerts.
 
 
 

@@ -8,7 +8,7 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 | Wazuh server | Ubuntu | SIEM manager + dashboard | 10.10.10.x |
 | Domain controller | Windows Server | Active Directory | 10.10.10.x |
 | Windows client | Windows 10/11 | Endpoint with Sysmon | 10.10.10.x |
-| Ubuntu server | Ubuntu | Linux endpoint | 10.10.10.x |
+| Ubuntu server | Ubuntu | Linux endpoint | 10.10.10.x | Kali attacker machine | Linux | 10.10.10.70
 
 # Setup Summary
 1. Deployed pfSense as the gateway for the lab network.
@@ -32,30 +32,38 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 | **Date** | 2026-09-24 |
 | **Analyst** | Michael Ayodele |
 | **Alert** | Wazuh rule 60204: Multiple Windows logon failures |
-| **Severity** |N/A |
-| **Verdict** | True Positive (simulated brute-force in lab) |
+| **Severity** |medium |
+| **Verdict** | True Positive (simulated brute-force in lab) using Kali attacker machine |
 | **MITRE ATT&CK** | T1110 Brute Force |
 
 # Summary
-Wazuh raised an alert for repeated failed logons against the account `morgan` on the Windows client. The lockout threshold was reached and the account was automatically locked out, which is the intended result of the domain's account lockout policy. I triaged the alert and documented the finding below..
+Wazuh raised an alert for repeated failed logons against the account `testuser` on a joined  Windows client. The lockout threshold was reached and the account was automatically locked out, which is the intended result of the domain's account lockout policy. I triaged the alert and documented the finding below..
 
 # Alert Details
 
-<img width="698" height="535" alt="wazuh Dashboard" src="https://github.com/user-attachments/assets/d1094986-7083-4a22-ae34-4058a190de23" />
+<img width="1920" height="1011" alt="dashboard view" src="https://github.com/user-attachments/assets/e2408984-bfeb-46dd-9db6-3f83c0c92c15" />
+
 *Wazuh dashboard showing the multiple-failures alert on the Windows client.*
 
 # Investigation 
 
-- **Who:** Account `LAB\morgan`
-- **What:** 7 failed logons (Event ID 4625) followed by 1 account lockout (Event ID 4740)
+- **Who:** Account `testuser`
+- **What:** 3 failed logons (Event ID 4625) followed by 1 account lockout (Event ID 4740)
 - **Where:** Windows client `MO1`, source IP `10.10.10.XXX`
-- **When:** 14:02 to 14:09 on 2026-09-24 (failures within about 4 minutes)
-- **Why:** Password guessing against a domain account using a repeated-attempt pattern
+- **When:** 18:29 to 18:59 on 2026-09-29 (failures within about 4 minutes)
+- **Why:** simulated brute-force attack using kali attacker machine.
 
 # Evidence
 
 
-<img width="1920" height="1012" alt="4625 log" src="https://github.com/user-attachments/assets/ea43590a-3f92-4a58-a287-4457381f2bbd" />
+<img width="1920" height="1011" alt="failed login eventID 4625" src="https://github.com/user-attachments/assets/f14cec9a-fb74-43db-9406-8ce3a1a08c31" />
+
+
+<img width="1920" height="1011" alt="windows failure eventID 4776" src="https://github.com/user-attachments/assets/f4815190-1783-4a23-9d71-112882f40a26" />
+
+<img width="1920" height="1011" alt="eventID4776 details" src="https://github.com/user-attachments/assets/f80d1ae3-2b76-4e10-ae93-5d49b5926d1c" />
+
+
 
 *Event ID 4625 showing logon type 3 (network) and failure reason "unknown user name or bad password".*
 

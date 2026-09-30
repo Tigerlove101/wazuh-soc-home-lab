@@ -29,7 +29,7 @@ I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and
 
 | Field | Detail |
 |---|---|
-| **Date** | 2026-09-24 |
+| **Date** | 2026-09-29 |
 | **Analyst** | Michael Ayodele |
 | **Alert** | Wazuh rule 60204: Multiple Windows logon failures |
 | **Severity** |medium |

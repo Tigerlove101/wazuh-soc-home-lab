@@ -51,12 +51,14 @@ Wazuh raised an alert for repeated failed logons against the account `testuser` 
 - **What:** 3 failed logons (Event ID 4625) followed by 1 account lockout (Event ID 4740)
 - **Where:** Windows client `MO1`, source IP `10.10.10.XXX`
 - **When:** 18:29 to 18:59 on 2026-09-29 (failures within about 4 minutes)
-- **Why:** simulated brute-force attack using kali attacker machine.
+- **Why:** simulated brute-force attack using kali attacker machine. (using Hydra)
 
 # Evidence
 
 
 <img width="1920" height="1011" alt="failed login eventID 4625" src="https://github.com/user-attachments/assets/f14cec9a-fb74-43db-9406-8ce3a1a08c31" />
+
+*Event ID 4625 showing logon type 3 (network) and failure reason "unknown user name or bad password".*
 
 
 <img width="1920" height="1011" alt="windows failure eventID 4776" src="https://github.com/user-attachments/assets/f4815190-1783-4a23-9d71-112882f40a26" />
@@ -65,24 +67,18 @@ Wazuh raised an alert for repeated failed logons against the account `testuser` 
 
 
 
-*Event ID 4625 showing logon type 3 (network) and failure reason "unknown user name or bad password".*
-
-*Event ID 4771 and 4740 on microsoft sentinel.*
-
-<img width="935" height="509" alt="Screenshot 2026-09-24 195027" src="https://github.com/user-attachments/assets/98bbd5f8-c4e2-4a03-9440-fa90da097b78" />
-
+*Event ID 4776 showing logon type 3 (network) and failure reason "unknown user name or bad password".*
 
 
 # Correlation
-- Reviewed activity around the incident for `morgan`: no new processes or group changes.
+- Reviewed activity around the incident for `testuser`: no new processes or group changes.
 - Checked for account lockout (Event ID 4740): triggered,lockout threshold was reached.
 - searched across all agents, no other hosts targeted.
 
-- <img width="1920" height="1012" alt="account lockout" src="https://github.com/user-attachments/assets/914936ac-1b44-4a97-8a7c-63e92bdd3d91" />
 
 
 # Recommended Response
-1. Reset the password for "Morgan" and force re-authentication.
+1. Reset the password for "testuser" and force re-authentication.
 2. Block or investigate the source IP at pfSense.
 3. Review other logons from that source over the past 24 hours.
 4. Tune the lockout policy so this pattern locks the account earlier.
@@ -90,3 +86,6 @@ Wazuh raised an alert for repeated failed logons against the account `testuser` 
 
 # Lessons Learned
 Wazuh's Windows failed-logon rule (60204) maps to Event ID 4625, while Microsoft Sentinel surfaced the related Event ID 4771 (Kerberos pre-auth failure, code 0x18) with additional detail. Comparing both tools showed how the same incident looks different depending on the log source, and confirmed the value of correlating the failure events with the resulting lockout event rather than treating them as separate alerts.
+
+
+

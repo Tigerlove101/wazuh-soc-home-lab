@@ -1,7 +1,8 @@
 # Wazuh SOC Home Lab
 I built a wazuh soc home-lab with windows server AD-DC,Ubuntu-server,pfsense and a domain joined windows client.i also deployed wazuh-agent,sysmon to collect logs from endpoints and simulated and failed logon and validate the account lockout policy.
 
-<img width="1206" height="1146" alt="Wazuh-Lab-Architechture" src="https://github.com/user-attachments/assets/da7de1b9-4987-4843-938b-113eb0a31660" />
+<img width="1206" height="1306" alt="Wazuh-Lab-Architechture(1)" src="https://github.com/user-attachments/assets/fbb9de2e-981d-4607-a28e-646c53a6abd2" />
+
 
 | Machine | OS | Role | IP |
 | Wazuh server | Ubuntu | SIEM manager + dashboard | 10.10.10.x |
